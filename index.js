@@ -1,19 +1,16 @@
-// index.js
+const express = require('express')
+const app = express()
+const PORT = 4000
 
-import http from 'http';
 
-// Create a server object
-const server = http.createServer((req, res) => {
-    // Set the response header
-    res.writeHead(200, {'Content-Type': 'text/plain'});
-    // Write some text to the response
-    res.end('Welcome to my school-pro app!');
+app.get('/home', (req, res) => {
+  res.status(200).json('Welcome, your app is working well');
+})
+
+
+app.listen(PORT, () => {
+  console.log(`Server running at http://localhost:${PORT}`);
 });
 
-// Define the port to listen on
-const port = 3000;
-
-// Start the server
-server.listen(port, () => {
-    console.log(`Server is running on http://localhost:${port}`);
-});
+// Export the Express API
+module.exports = app
