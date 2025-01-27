@@ -5,7 +5,7 @@ import { Request, Response } from "express";
 
 export const createParent = async (req: TypedRequestBody<ParentCreateProps>, res: Response): Promise<void> => {
   const data = req.body;
-  const { nationalId, phone, email, whatsappNumber, title, firstName, lastName, relationship, address, gender, dateOfBirth, nationality, contactMethod, occupation, password } = data;
+  const { nationalId, phone, email, whatsappNumber, title, firstName, lastName, relationship, address, gender, dateOfBirth, nationality, contactMethod, occupation, password, user} = data;
   
   const formattedData = {
     nationalId,
@@ -22,7 +22,8 @@ export const createParent = async (req: TypedRequestBody<ParentCreateProps>, res
     nationality,
     contactMethod,
     occupation,
-    password
+    password,
+    user: { connect: { id: user } },
   };  
 
   try {

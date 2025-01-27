@@ -85,6 +85,7 @@ export interface ParentCreateProps {
   imageUrl?: string;
   schoolId: string;
   userId: string;
+  user: string;
 }
 
 export type StudentCreateProps = {
