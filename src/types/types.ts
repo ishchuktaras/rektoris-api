@@ -18,7 +18,7 @@ export type ContactProps = {
   pointsToSolve: string;
 };
 
-export type UserCreateProps = {  
+export type UserCreateProps = {
   email: string;
   password: string;
   role: UserRole;
@@ -37,11 +37,13 @@ export type UserLoginProps = {
 export type ClassCreateProps = {
   title: string;
   slug: string;
+  schoolId: string;
 };
 
 export type DepartmentCreateProps = {
   name: string;
   slug: string;
+  schoolId: string;
 };
 
 export type SubjectCreateProps = {
@@ -61,6 +63,7 @@ export type StreamCreateProps = {
   title: string;
   slug: string;
   classId: string;
+  schoolId: string;
 };
 
 export interface ParentCreateProps {
@@ -80,7 +83,9 @@ export interface ParentCreateProps {
   address: string;
   password: string;
   imageUrl?: string;
-};
+  schoolId: string;
+  userId: string;
+}
 
 export type StudentCreateProps = {
   name: string;
@@ -107,6 +112,8 @@ export type StudentCreateProps = {
   regNo: string;
   admissionDate: string;
   address: string;
+  schoolId: string;
+  userId: string;
 };
 
 export type TeacherCreateProps = {
@@ -138,4 +145,6 @@ export type TeacherCreateProps = {
   occupation: string;
   address: string;
   imageUrl: string;
+  schoolId: string;
+  userId: string;
 };
