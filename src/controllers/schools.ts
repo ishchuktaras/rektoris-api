@@ -29,8 +29,9 @@ export const createSchool = async (req: Request, res: Response): Promise<void> =
     });
     console.log(
       `School created successfully: ${newSchool.name} (${newSchool.id})`);
+      const {createdAt, updatedAt, ...others}=newSchool
     res.status(201).json({
-      data: newSchool,
+      data: others,
       error: null,
     });
   } catch (error) {
