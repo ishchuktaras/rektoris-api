@@ -1,9 +1,11 @@
-
 import { db } from "@/db/db";
 import { generateSlug } from "@/utils/generateSlug";
 import { Request, Response } from "express";
 
-export const createSchool = async (req: Request, res: Response): Promise<void> => {
+export const createSchool = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   const { name, logo } = req.body;
   const slug = generateSlug(name);
   try {
@@ -14,22 +16,23 @@ export const createSchool = async (req: Request, res: Response): Promise<void> =
       },
     });
     if (existingSchool) {
-       res.status(409).json({
+      res.status(409).json({
         data: null,
         error: "Škola s tímto názvem již existuje",
       });
-      return
+      return;
     }
     const newSchool = await db.school.create({
       data: {
         name,
         slug,
-        logo        
+        logo,
       },
     });
     console.log(
-      `Škola byla úspěšně vytvořena: ${newSchool.name} (${newSchool.id})`);
-      const {createdAt, updatedAt, ...others}=newSchool
+      `Škola byla úspěšně vytvořena: ${newSchool.name} (${newSchool.id})`
+    );
+    const { createdAt, updatedAt, ...others } = newSchool;
     res.status(201).json({
       data: others,
       error: null,
@@ -41,8 +44,11 @@ export const createSchool = async (req: Request, res: Response): Promise<void> =
       error: "Něco se pokazilo",
     });
   }
-}
-export const getSchools = async (req: Request, res: Response): Promise<void> => {
+};
+export const getSchools = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   try {
     const schools = await db.school.findMany({
       orderBy: {
@@ -53,5 +59,27 @@ export const getSchools = async (req: Request, res: Response): Promise<void> => 
   } catch (error) {
     console.log(error);
   }
-}
+};
 
+export const getSchoolById = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  const { id } = req.params;
+  try {
+    const school = await db.school.findUnique({
+      where: {
+        id,
+      },
+      select:{
+        name: true,
+    id: true,
+    logo: true,
+    slug: true,
+      }
+    });
+    res.status(200).json(school);
+  } catch (error) {
+    console.log(error);
+  }
+};

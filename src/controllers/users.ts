@@ -4,13 +4,15 @@ import {
   UserCreateProps,
   UserLoginProps,
 } from "@/types/types";
-import e, { Response } from "express";
 import bcrypt from "bcrypt";
 import { TokenPayload } from "@/utils/tokens";
 import { generateAccessToken, generateRefreshToken } from "@/utils/tokens";
+import e, { Request, Response } from "express";
 
-export const createUser = async ( req: TypedRequestBody<UserCreateProps>,
-  res: Response ): Promise<void> => {
+export const createUser = async (
+  req: TypedRequestBody<UserCreateProps>,
+  res: Response
+): Promise<void> => {
   const data = req.body;
   const { email, password, role, name, phone, image, schoolId, schoolName } =
     data;
@@ -50,9 +52,12 @@ export const createUser = async ( req: TypedRequestBody<UserCreateProps>,
       error: "Něco se pokazilo",
     });
   }
-}
+};
 
-export const loginUser = async ( req: TypedRequestBody<UserLoginProps>, res: Response ): Promise<void> => {
+export const loginUser = async (
+  req: TypedRequestBody<UserLoginProps>,
+  res: Response
+): Promise<void> => {
   const data = req.body;
   const { email, password } = data;
 
@@ -103,7 +108,7 @@ export const loginUser = async ( req: TypedRequestBody<UserLoginProps>, res: Res
 
     // Remove sensitive data
     const { password: _, ...userWithoutPassword } = existingUser;
- 
+
     res.status(200).json({
       data: {
         user: userWithoutPassword,
@@ -118,5 +123,26 @@ export const loginUser = async ( req: TypedRequestBody<UserLoginProps>, res: Res
       data: null,
       error: "Něco se pokazilo",
     });
+  }
+};
+
+export async function getAllUsers(req: Request, res: Response): Promise<void> {
+  try {
+    const users = await db.user.findMany({
+      orderBy: {
+        createdAt: "desc",
+      },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        phone: true,
+        image: true,
+      },
+    });
+    res.status(200).json(users);
+  } catch (error) {
+    console.error("Při načítání předmětu došlo k chybě:", error);
+    res.status(500).json({ message: "Nepodařilo se načíst předmět." });
   }
 }
