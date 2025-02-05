@@ -16,7 +16,7 @@ export const createSchool = async (req: Request, res: Response): Promise<void> =
     if (existingSchool) {
        res.status(409).json({
         data: null,
-        error: "School with this name already exists",
+        error: "Škola s tímto názvem již existuje",
       });
       return
     }
@@ -28,7 +28,7 @@ export const createSchool = async (req: Request, res: Response): Promise<void> =
       },
     });
     console.log(
-      `School created successfully: ${newSchool.name} (${newSchool.id})`);
+      `Škola byla úspěšně vytvořena: ${newSchool.name} (${newSchool.id})`);
       const {createdAt, updatedAt, ...others}=newSchool
     res.status(201).json({
       data: others,
@@ -38,7 +38,7 @@ export const createSchool = async (req: Request, res: Response): Promise<void> =
     console.log(error);
     res.status(500).json({
       data: null,
-      error: "Something went wrong",
+      error: "Něco se pokazilo",
     });
   }
 }

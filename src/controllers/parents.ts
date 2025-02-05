@@ -36,15 +36,15 @@ export const createParent = async (req: TypedRequestBody<ParentCreateProps>, res
     ]);
 
     if (existingNationalId) {
-      res.status(409).json({ error: "Parent with this National ID already exists" });
+      res.status(409).json({ error: "Rodič s tímto občanským průkazem již existuje" });
       return;
     }
     if (existingEmail) {
-      res.status(409).json({ error: "Parent with this Email already exists" });
+      res.status(409).json({ error: "Rodič s tímto e-mailem již existuje" });
       return;
     }
     if (existingPhoneNumber) {
-      res.status(409).json({ error: "Parent with this Phone already exists" });
+      res.status(409).json({ error: "Rodič s tímto telefonem již existuje" });
       return;
     }   
 
@@ -52,7 +52,7 @@ export const createParent = async (req: TypedRequestBody<ParentCreateProps>, res
     const newParent = await db.parent.create({ 
       data: formattedData 
     });
-    console.log(`Parent created successfully: ${newParent.firstName} (${newParent.id})`);
+    console.log(`Rodič byl úspěšně vytvořen: ${newParent.firstName} (${newParent.id})`);
     res.status(201).json({ data: newParent });
   } catch (error: any) {
     console.error("Database error:", error); // Add more logging here
@@ -74,7 +74,7 @@ export const getParents = async(req: Request, res: Response): Promise<void> =>
     console.log(error);
     res.status(500).json({
       data: null,
-      error: "Something went wrong"
+      error: "Něco se pokazilo"
     });
   }
 }

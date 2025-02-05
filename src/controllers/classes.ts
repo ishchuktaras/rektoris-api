@@ -25,7 +25,7 @@ export const createClass = async (
     if (existingClass) {
       res.status(409).json({
         data: null,
-        error: "Class already exists",
+        error: "Třída již existuje",
       });
       return;
     }
@@ -33,7 +33,7 @@ export const createClass = async (
       data,
     });
     console.log(
-      `Class created successfully: ${newClass.title} (${newClass.id})`
+      `Třída byla úspěšně vytvořena: ${newClass.title} (${newClass.id})`
     );
     res.status(201).json({
       data: newClass,
@@ -43,7 +43,7 @@ export const createClass = async (
     console.log(error);
     res.status(500).json({
       data: null,
-      error: "Something went wrong",
+      error: "Něco se pokazilo",
     });
   }
 };

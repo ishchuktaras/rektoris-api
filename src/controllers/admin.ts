@@ -22,14 +22,14 @@ export const createContact = async( req: TypedRequestBody<ContactProps>, res: Re
     if (existingSchool || existingEmail) {
       res.status(409).json({
         data: null,
-        error: "We have already recieved a request for this school or email",
+        error: "Již jsme obdrželi požadavek na tuto školu nebo e-mail",
       });
     }
     const newContact = await db.contact.create({
       data
     });
     console.log(
-      `Contact created successfully: ${newContact.schoolName} (${newContact.id})`);
+      `Kontakt byl úspěšně vytvořen: ${newContact.schoolName} (${newContact.id})`);
     res.status(201).json({
       data: newContact,
       error: null,
@@ -38,7 +38,7 @@ export const createContact = async( req: TypedRequestBody<ContactProps>, res: Re
     console.log(error);
     res.status(500).json({
       data: null,
-      error: "Something went wrong",
+      error: "Něco se pokazilo",
     });
   }
 }

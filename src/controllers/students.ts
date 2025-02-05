@@ -13,12 +13,12 @@ export const createStudent = async (req: TypedRequestBody<StudentCreateProps>, r
     const parsedAdmissionDate = new Date(admissionDate);
     
     if (isNaN(parsedDateOfBirth.getTime())) {
-      res.status(400).json({ error: "Invalid date of birth format" });
+      res.status(400).json({ error: "Neplatný formát data narození" });
       return;
     }
     
     if (isNaN(parsedAdmissionDate.getTime())) {
-      res.status(400).json({ error: "Invalid admission date format" });
+      res.status(400).json({ error: "Neplatný formát data přijetí" });
       return;
     }
 
@@ -33,19 +33,19 @@ export const createStudent = async (req: TypedRequestBody<StudentCreateProps>, r
     const [existingEmail, existingBirthCertificateNumber, existingRegNo, existingRollNumber] = existingEntries;
 
     if (existingEmail) {
-      res.status(409).json({ error: "Student with this Email already exists" });
+      res.status(409).json({ error: "Student s tímto e-mailem již existuje" });
       return;
     }
     if (existingBirthCertificateNumber) {
-      res.status(409).json({ error: "Student with this Birth Certificate Number already exists" });
+      res.status(409).json({ error: "Student s tímto rodným číslem již existuje" });
       return;
     }
     if (existingRegNo) {
-      res.status(409).json({ error: "Student with this Registration Number already exists" });
+      res.status(409).json({ error: "Student s tímto registračním číslem již existuje" });
       return;
     }
     if (existingRollNumber) {
-      res.status(409).json({ error: "Student with this School Number already exists" });
+      res.status(409).json({ error: "Student s tímto školním číslem již existuje" });
       return;
     }
 
@@ -66,7 +66,7 @@ export const createStudent = async (req: TypedRequestBody<StudentCreateProps>, r
     console.error("Error creating student:", error);
     res.status(500).json({
       data: null,
-      error: "Failed to create student. Please try again later."
+      error: "Vytvoření studenta se nezdařilo. "
     });
   }
 };
@@ -86,11 +86,11 @@ export const getStudents = async(req: Request, res: Response): Promise<void> =>
     console.log(error);
     res.status(500).json({
       data: null,
-      error: "Something went wrong"
+      error: "Něco se pokazilo"
     });
     res.status(500).json({
       data: null,
-      error: "Failed to get next student sequence. Please try again later."
+      error: "Nepodařilo se získat další sekvenci studentů."
     });
   }
 }
@@ -118,7 +118,7 @@ export const getNextStudentSequence = async (req: Request, res: Response): Promi
     console.log(error);
     res.status(500).json({
       data: null,
-      error: "Failed to get next student sequence. Please try again later."
+      error: "Nepodařilo se získat další sekvenci studentů."
     });
   }
 }
