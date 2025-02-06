@@ -84,6 +84,7 @@ export interface ParentCreateProps {
   password: string;
   imageUrl?: string;
   schoolId: string;
+  schoolName: string;
   userId: string;
   user: string;
 }
@@ -114,6 +115,7 @@ export type StudentCreateProps = {
   admissionDate: string;
   address: string;
   schoolId: string;
+  schoolName: string;
   userId: string;
 };
 
@@ -147,5 +149,6 @@ export type TeacherCreateProps = {
   address: string;
   imageUrl: string;
   schoolId: string;
+  schoolName: string;
   userId: string;
 };

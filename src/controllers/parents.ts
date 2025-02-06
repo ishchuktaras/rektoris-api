@@ -1,7 +1,9 @@
 
 import { db } from "@/db/db";
 import { ParentCreateProps, TypedRequestBody } from "@/types/types";
+import { UserRole } from "@prisma/client";
 import { Request, Response } from "express";
+import { createUserService } from "./users";
 
 export const createParent = async (req: TypedRequestBody<ParentCreateProps>, res: Response): Promise<void> => {
   const data = req.body;
@@ -46,7 +48,22 @@ export const createParent = async (req: TypedRequestBody<ParentCreateProps>, res
     if (existingPhoneNumber) {
       res.status(409).json({ error: "Rodič s tímto telefonem již existuje" });
       return;
-    }   
+    }
+
+     // Create a student as a user
+        const userData = {
+          email: data.email,
+          password: data.password,
+          role: "PARENT" as UserRole,
+          name: `${data.firstName} ${data.lastName}`,
+          phone: data.phone,
+          image: data.imageUrl,
+          schoolId: data.schoolId,
+          schoolName: data.schoolName,
+        };
+        const user = await createUserService(userData);
+        data.userId = user.id;
+
 
     // Create a new parent
     const newParent = await db.parent.create({ 

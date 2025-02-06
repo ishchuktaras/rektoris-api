@@ -1,7 +1,9 @@
 import { db } from "@/db/db";
 import { TypedRequestBody, TeacherCreateProps } from "@/types/types";
 import { convertDateToIso } from "@/utils/convertDateToIso";
+import { UserRole } from "@prisma/client";
 import { Request, Response } from "express";
+import { createUserService } from "./users";
 
 export const createTeacher = async (
   req: TypedRequestBody<TeacherCreateProps>,
@@ -37,7 +39,21 @@ export const createTeacher = async (
       return;
     }
 
-    // Create a new parent
+     // Create a teacher as a user
+        const userData = {
+          email: data.email,
+          password: data.password,
+          role: "TEACHER" as UserRole,
+          name: `${data.firstName} ${data.lastName}`,
+          phone: data.phone,
+          image: data.imageUrl,
+          schoolId: data.schoolId,
+          schoolName: data.schoolName,
+        };
+        const user = await createUserService(userData);
+        data.userId = user.id;
+
+    // Create a new teacher
     const newTeacher = await db.teacher.create({
       data,
     });

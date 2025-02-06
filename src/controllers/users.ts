@@ -9,45 +9,42 @@ import { TokenPayload } from "@/utils/tokens";
 import { generateAccessToken, generateRefreshToken } from "@/utils/tokens";
 import e, { Request, Response } from "express";
 
+export async function createUserService(data: UserCreateProps) {
+  const existingEmail = await db.user.findUnique({
+    where: { email: data.email },
+  });
+
+  if (existingEmail) {
+    throw new Error("Email již existuje");
+  }
+
+  const hashedPassword = await bcrypt.hash(data.password, 10);
+  const userData = { ...data, password: hashedPassword };
+
+  const newUser = await db.user.create({
+    data: userData,
+  });
+
+  console.log(`Uživatel byl úspěšně vytvořen: ${newUser.name} (${newUser.id})`);
+  return newUser;
+}
+
 export const createUser = async (
   req: TypedRequestBody<UserCreateProps>,
   res: Response
-): Promise<void> => {
-  const data = req.body;
-  const { email, password, role, name, phone, image, schoolId, schoolName } =
-    data;
+): Promise<Response> => {
+  const data = req.body;  
 
-  try {
-    // Check if the user exists
-    const existingEmail = await db.user.findUnique({
-      where: {
-        email,
-      },
-    });
-    if (existingEmail) {
-      res.status(409).json({
-        data: null,
-        error: "Email již existuje",
-      });
-      return;
-    }
-
-    // Hash the password
-    const hashedPassword = await bcrypt.hash(password, 10);
-    data.password = hashedPassword;
-    const newUser = await db.user.create({
-      data,
-    });
-    console.log(
-      `Nový uživatel byl úspěšně vytvořen: ${newUser.name}(id: ${newUser.id})`
-    );
-    res.status(201).json({
+  try { 
+   
+    const newUser = await createUserService(req.body);
+    return res.status(201).json({
       data: newUser,
       error: null,
     });
   } catch (error) {
     console.log(error);
-    res.status(500).json({
+    return res.status(500).json({
       data: null,
       error: "Něco se pokazilo",
     });

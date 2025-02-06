@@ -1,22 +1,33 @@
-
 import { db } from "@/db/db";
-import {StudentCreateProps, TypedRequestBody } from "@/types/types";
+import { StudentCreateProps, TypedRequestBody } from "@/types/types";
 import { Request, Response } from "express";
+import { createUserService } from "./users";
+import { UserRole } from "@prisma/client";
 
-export const createStudent = async (req: TypedRequestBody<StudentCreateProps>, res: Response): Promise<void> => {
+export const createStudent = async (
+  req: TypedRequestBody<StudentCreateProps>,
+  res: Response
+): Promise<void> => {
   const data = req.body;
-  const { birthCertificateNumber, regNo, email, rollNumber, dateOfBirth, admissionDate } = data;
-  
+  const {
+    birthCertificateNumber,
+    regNo,
+    email,
+    rollNumber,
+    dateOfBirth,
+    admissionDate,
+  } = data;
+
   try {
     // Validate dates
     const parsedDateOfBirth = new Date(dateOfBirth);
     const parsedAdmissionDate = new Date(admissionDate);
-    
+
     if (isNaN(parsedDateOfBirth.getTime())) {
       res.status(400).json({ error: "Neplatný formát data narození" });
       return;
     }
-    
+
     if (isNaN(parsedAdmissionDate.getTime())) {
       res.status(400).json({ error: "Neplatný formát data přijetí" });
       return;
@@ -27,53 +38,78 @@ export const createStudent = async (req: TypedRequestBody<StudentCreateProps>, r
       db.student.findUnique({ where: { email } }),
       db.student.findUnique({ where: { birthCertificateNumber } }),
       db.student.findUnique({ where: { regNo } }),
-      db.student.findUnique({ where: { rollNumber } })
+      db.student.findUnique({ where: { rollNumber } }),
     ]);
 
-    const [existingEmail, existingBirthCertificateNumber, existingRegNo, existingRollNumber] = existingEntries;
+    const [
+      existingEmail,
+      existingBirthCertificateNumber,
+      existingRegNo,
+      existingRollNumber,
+    ] = existingEntries;
 
     if (existingEmail) {
       res.status(409).json({ error: "Student s tímto e-mailem již existuje" });
       return;
     }
     if (existingBirthCertificateNumber) {
-      res.status(409).json({ error: "Student s tímto rodným číslem již existuje" });
+      res
+        .status(409)
+        .json({ error: "Student s tímto rodným číslem již existuje" });
       return;
     }
     if (existingRegNo) {
-      res.status(409).json({ error: "Student s tímto registračním číslem již existuje" });
+      res
+        .status(409)
+        .json({ error: "Student s tímto registračním číslem již existuje" });
       return;
     }
     if (existingRollNumber) {
-      res.status(409).json({ error: "Student s tímto školním číslem již existuje" });
+      res
+        .status(409)
+        .json({ error: "Student s tímto školním číslem již existuje" });
       return;
     }
 
+    // Create a student as a user
+    const userData = {
+      email: data.email,
+      password: data.password,
+      role: "STUDENT" as UserRole,
+      name: data.name,
+      phone: data.phone,
+      image: data.imageUrl,
+      schoolId: data.schoolId,
+      schoolName: data.schoolName,
+    };
+    const user = await createUserService(userData);
+    data.userId = user.id;
     // Create student with validated dates
     const newStudent = await db.student.create({
       data: {
         ...data,
         dateOfBirth: parsedDateOfBirth,
-        admissionDate: parsedAdmissionDate
-      }
+        admissionDate: parsedAdmissionDate,
+      },
     });
 
     res.status(201).json({
       data: newStudent,
-      error: null
+      error: null,
     });
   } catch (error) {
     console.error("Error creating student:", error);
     res.status(500).json({
       data: null,
-      error: "Vytvoření studenta se nezdařilo. "
+      error: "Vytvoření studenta se nezdařilo. ",
     });
   }
 };
 
-
-export const getStudents = async(req: Request, res: Response): Promise<void> =>
-{
+export const getStudents = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   try {
     const students = await db.student.findMany({
       orderBy: {
@@ -81,24 +117,25 @@ export const getStudents = async(req: Request, res: Response): Promise<void> =>
       },
     });
     res.status(200).json(students);
-    return
+    return;
   } catch (error) {
     console.log(error);
     res.status(500).json({
       data: null,
-      error: "Něco se pokazilo"
+      error: "Něco se pokazilo",
     });
     res.status(500).json({
       data: null,
-      error: "Nepodařilo se získat další sekvenci studentů."
+      error: "Nepodařilo se získat další sekvenci studentů.",
     });
   }
-}
+};
 
-export const getNextStudentSequence = async (req: Request, res: Response): Promise<void> => {
-
+export const getNextStudentSequence = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   try {
-
     const sequence = await db.student.findFirst({
       orderBy: {
         createdAt: "desc",
@@ -118,8 +155,7 @@ export const getNextStudentSequence = async (req: Request, res: Response): Promi
     console.log(error);
     res.status(500).json({
       data: null,
-      error: "Nepodařilo se získat další sekvenci studentů."
+      error: "Nepodařilo se získat další sekvenci studentů.",
     });
   }
-}
-
+};
