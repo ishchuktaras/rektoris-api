@@ -14,7 +14,7 @@ export const createTeacher = async (
   const { nationalId, phone, email, dateOfBirth, dateOfJoining } = data;
   data.dateOfBirth = convertDateToIso(dateOfBirth);
   data.dateOfJoining = convertDateToIso(dateOfJoining);
-  
+
   try {
     // Check for existing entries
     const [existingEmail, existingNationalId, existingPhoneNumber] =
@@ -27,7 +27,9 @@ export const createTeacher = async (
     if (existingNationalId) {
       res
         .status(409)
-        .json({ error: "Učitel s tímto čislem občanského průkazu již existuje" });
+        .json({
+          error: "Učitel s tímto čislem občanského průkazu již existuje",
+        });
       return;
     }
     if (existingEmail) {
@@ -39,19 +41,19 @@ export const createTeacher = async (
       return;
     }
 
-     // Create a teacher as a user
-        const userData = {
-          email: data.email,
-          password: data.password,
-          role: "TEACHER" as UserRole,
-          name: `${data.firstName} ${data.lastName}`,
-          phone: data.phone,
-          image: data.imageUrl,
-          schoolId: data.schoolId,
-          schoolName: data.schoolName,
-        };
-        const user = await createUserService(userData);
-        data.userId = user.id;
+    // Create a teacher as a user
+    const userData = {
+      email: data.email,
+      password: data.password,
+      role: "TEACHER" as UserRole,
+      name: `${data.firstName} ${data.lastName}`,
+      phone: data.phone,
+      image: data.imageUrl,
+      schoolId: data.schoolId,
+      schoolName: data.schoolName,
+    };
+    const user = await createUserService(userData);
+    data.userId = user.id;
 
     // Create a new teacher
     const newTeacher = await db.teacher.create({

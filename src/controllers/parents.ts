@@ -52,20 +52,19 @@ export const createParent = async (req: TypedRequestBody<ParentCreateProps>, res
       return;
     }
 
-     // Create a parent as a user
-        const userData = {
-          email: data.email,
-          password: data.password,
-          role: "PARENT" as UserRole,
-          name: `${data.firstName} ${data.lastName}`,
-          phone: data.phone,
-          image: data.imageUrl,
-          schoolId: data.schoolId,
-          schoolName: data.schoolName,
-        };
-        const user = await createUserService(userData);
-        data.userId = user.id;
-
+  // Create a teacher as a user
+  const userData = {
+    email: data.email,
+    password: data.password,
+    role: "PARENT" as UserRole,
+    name: `${data.firstName} ${data.lastName}`,
+    phone: data.phone,
+    image: data.imageUrl,
+    schoolId: data.schoolId,
+    schoolName: data.schoolName,
+  };
+  const user = await createUserService(userData);
+  data.userId = user.id;
 
     // Create a new parent
     const newParent = await db.parent.create({ 
