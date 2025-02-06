@@ -144,7 +144,7 @@ model Parent {
   password       String
   imageUrl       String?
   students       Student[]
-  schoolId       String?
+  schoolId       String
   schoolName     String
   school         School?   @relation(fields: [schoolId], references: [id], onDelete: Cascade)
   createdAt      DateTime  @default(now())
