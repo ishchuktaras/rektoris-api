@@ -86,7 +86,7 @@ export interface ParentCreateProps {
   schoolId: string;
   schoolName: string;
   userId: string;
-  user: string;
+  user?: string;
 }
 
 export type StudentCreateProps = {
