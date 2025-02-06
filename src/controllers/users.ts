@@ -32,19 +32,19 @@ export async function createUserService(data: UserCreateProps) {
 export const createUser = async (
   req: TypedRequestBody<UserCreateProps>,
   res: Response
-): Promise<Response> => {
+): Promise<void> => {
   const data = req.body;  
 
   try { 
    
     const newUser = await createUserService(req.body);
-    return res.status(201).json({
+    res.status(201).json({
       data: newUser,
       error: null,
     });
   } catch (error) {
     console.log(error);
-    return res.status(500).json({
+    res.status(500).json({
       data: null,
       error: "Něco se pokazilo",
     });

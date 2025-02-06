@@ -8,7 +8,6 @@ generator client {
   provider = "prisma-client-js"
 }
 
-
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
@@ -16,18 +15,18 @@ datasource db {
 
 // School model
 model School {
-  id   String  @id @default(cuid())
-  name String
-  logo String?
-  slug String  @unique
-  students Student[] // Relation to Student model
-  parents  Parent[]  // Relation to Parent model
-  departments Department[]  // Relation to Department model
-  teachers Teacher[]  // Relation to Teacher model
-  classes  Class[]  // Relation to Class model
-  streams  Stream[]  // Relation to Stream model
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          String       @id @default(cuid())
+  name        String
+  logo        String?
+  slug        String       @unique
+  students    Student[] // Relation to Student model
+  parents     Parent[] // Relation to Parent model
+  departments Department[] // Relation to Department model
+  teachers    Teacher[] // Relation to Teacher model
+  classes     Class[] // Relation to Class model
+  streams     Stream[] // Relation to Stream model
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
 
   @@map("schools")
 }
@@ -93,22 +92,22 @@ enum UserRole {
 }
 
 model User {
-  id        String    @id @default(cuid())
-  email     String    @unique
-  password  String
-  role      UserRole
-  name      String
-  phone     String?
-  image     String?
-  schoolId  String?
+  id         String   @id @default(cuid())
+  email      String   @unique
+  password   String
+  role       UserRole
+  name       String
+  phone      String?
+  image      String?
+  schoolId   String?
   schoolName String?
 
-  teacher   Teacher?
-  student   Student?
-  parent    Parent?
+  teacher       Teacher?
+  student       Student?
+  parent        Parent?
   refreshTokens RefreshToken[]
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
 }
 
 // Refresh Token model
@@ -129,8 +128,8 @@ model Parent {
   title          String
   firstName      String
   lastName       String
-  userId String @unique
-  user   User   @relation(fields: [userId], references: [id])
+  userId         String    @unique
+  user           User      @relation(fields: [userId], references: [id])
   relationship   String
   email          String    @unique
   nationalId     String    @unique
@@ -146,9 +145,10 @@ model Parent {
   imageUrl       String?
   students       Student[]
   schoolId       String?
+  schoolName     String
   school         School?   @relation(fields: [schoolId], references: [id], onDelete: Cascade)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
 
   @@map("parents")
 }
@@ -162,8 +162,8 @@ model Student {
   email                  String   @unique
   parentId               String
   parentName             String?
-  userId String @unique
-  user   User   @relation(fields: [userId], references: [id])
+  userId                 String   @unique
+  user                   User     @relation(fields: [userId], references: [id])
   classTitle             String?
   classId                String
   streamTitle            String?
@@ -183,9 +183,10 @@ model Student {
   admissionDate          DateTime
   address                String
   schoolId               String
+  schoolName             String
   school                 School   @relation(fields: [schoolId], references: [id], onDelete: Cascade)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
 
   // Relationships (assuming these exist)
   parent Parent @relation(fields: [parentId], references: [id], onDelete: Cascade)
@@ -205,8 +206,8 @@ model Teacher {
   id               String              @id @default(cuid())
   createdAt        DateTime            @default(now())
   updatedAt        DateTime            @updatedAt
-  userId String @unique
-  user   User   @relation(fields: [userId], references: [id])
+  userId           String              @unique
+  user             User                @relation(fields: [userId], references: [id])
   firstName        String
   lastName         String
   title            String
@@ -243,9 +244,10 @@ model Teacher {
   experience       Int?
   bio              String?             @db.Text
   skills           String?
-   // School Relationship
-   school      School              @relation(fields: [schoolId], references: [id])
-   schoolId    String  
+  // School Relationship
+  school           School              @relation(fields: [schoolId], references: [id])
+  schoolId         String
+  schoolName       String
   documents        TeacherDocument[]
   leaves           TeacherLeave[]
   evaluations      TeacherEvaluation[]
@@ -260,8 +262,8 @@ model Department {
   slug         String    @unique
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
-  school      School  @relation(fields: [schoolId], references: [id], onDelete: Cascade)
-  schoolId    String
+  school       School    @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  schoolId     String
   hodId        String?
   hodName      String?
   hodStartDate DateTime?
