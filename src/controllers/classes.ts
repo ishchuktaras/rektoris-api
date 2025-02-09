@@ -74,8 +74,46 @@ export async function getClasses(req: Request, res: Response): Promise<void> {
 
     res.status(200).json(classes);
   } catch (error) {
-    console.error("Error fetching classes:", error);
-    res.status(500).json({ message: "Failed to fetch classes." });
+    console.error("Chyba při načítání tříd:", error);
+    res.status(500).json({ message: "Třídu se nepodařilo načíst." });
+  }
+}
+
+export async function getClassesBySchoolId(
+  req: Request,
+  res: Response
+): Promise<void> {
+  const { schoolId } = req.params;
+  try {
+    const classes = await db.class.findMany({
+      where:{
+        schoolId
+      },
+      orderBy: {
+        createdAt: "desc",
+      },      
+      include: {
+        streams: {
+          include: {
+            _count: {
+              select: {
+                students: true, // Get the count of students in each stream
+              },
+            },
+          },
+        },
+        _count: {
+          select: {
+            students: true, // Get the count of students directly associated with the class
+          },
+        },
+      },
+    });
+
+    res.status(200).json(classes);
+  } catch (error) {
+    console.error("Chyba při načítání tříd:", error);
+    res.status(500).json({ message: "Třídu se nepodařilo načíst." });
   }
 }
 
@@ -92,12 +130,12 @@ export async function getBriefClasses(
         id: true,
         title: true,
       },
-});
+    });
 
     res.status(200).json(classes);
   } catch (error) {
-    console.error("Error fetching classes:", error);
-    res.status(500).json({ message: "Failed to fetch classes." });
+    console.error("Chyba při načítání tříd:", error);
+    res.status(500).json({ message: "Třídu se nepodařilo načíst." });
   }
 }
 
@@ -119,7 +157,7 @@ export async function createStream(
     if (existingStream) {
       res.status(409).json({
         data: null,
-        error: "Stream already exists",
+        error: "Stream již existuje",
       });
       return;
     }
@@ -127,7 +165,7 @@ export async function createStream(
       data,
     });
     console.log(
-      `Stream created successfully: ${newStream.title} (${newStream.id})`
+      `Stream byl úspěšně vytvořen: ${newStream.title} (${newStream.id})`
     );
     res.status(201).json({
       data: newStream,
@@ -137,7 +175,7 @@ export async function createStream(
     console.log(error);
     res.status(500).json({
       data: null,
-      error: "Something went wrong",
+      error: "Něco se pokazilo",
     });
   }
 }
