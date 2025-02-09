@@ -103,3 +103,28 @@ export const getParents = async (
     });
   }
 };
+
+export const getParentsBySchoolId = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  const { schoolId } = req.params;
+  try {
+    const parents = await db.parent.findMany({
+      where: {
+        schoolId,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+    res.status(200).json(parents);
+    return;
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      data: null,
+      error: "Něco se pokazilo",
+    });
+  }
+};

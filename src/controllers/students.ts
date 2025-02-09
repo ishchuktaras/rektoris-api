@@ -131,12 +131,45 @@ export const getStudents = async (
   }
 };
 
+export const getStudentsBySchoolId = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const { schoolId } = req.params;
+    const students = await db.student.findMany({
+      where: {
+        schoolId,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+    res.status(200).json(students);
+    return;
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      data: null,
+      error: "Něco se pokazilo",
+    });
+    res.status(500).json({
+      data: null,
+      error: "Nepodařilo se získat další sekvenci studentů.",
+    });
+  }
+};
+
 export const getNextStudentSequence = async (
   req: Request,
   res: Response
 ): Promise<void> => {
   try {
+    const { schoolId } = req.params;
     const sequence = await db.student.findFirst({
+      where:{
+        schoolId
+      },
       orderBy: {
         createdAt: "desc",
       },

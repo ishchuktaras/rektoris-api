@@ -25,11 +25,9 @@ export const createTeacher = async (
       ]);
 
     if (existingNationalId) {
-      res
-        .status(409)
-        .json({
-          error: "Učitel s tímto čislem občanského průkazu již existuje",
-        });
+      res.status(409).json({
+        error: "Učitel s tímto čislem občanského průkazu již existuje",
+      });
       return;
     }
     if (existingEmail) {
@@ -75,6 +73,31 @@ export const getTeachers = async (
 ): Promise<void> => {
   try {
     const teachers = await db.teacher.findMany({
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+    res.status(200).json(teachers);
+    return;
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      data: null,
+      error: "Něco se pokazilo",
+    });
+  }
+};
+
+export const getTeachersBySchoolId = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const { schoolId } = req.params;
+    const teachers = await db.teacher.findMany({
+      where:{
+        schoolId
+      },
       orderBy: {
         createdAt: "desc",
       },

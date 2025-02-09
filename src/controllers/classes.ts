@@ -86,12 +86,12 @@ export async function getClassesBySchoolId(
   const { schoolId } = req.params;
   try {
     const classes = await db.class.findMany({
-      where:{
-        schoolId
+      where: {
+        schoolId,
       },
       orderBy: {
         createdAt: "desc",
-      },      
+      },
       include: {
         streams: {
           include: {
@@ -121,8 +121,12 @@ export async function getBriefClasses(
   req: Request,
   res: Response
 ): Promise<void> {
+  const { schoolId } = req.params;
   try {
     const classes = await db.class.findMany({
+      where: {
+        schoolId
+      },
       orderBy: {
         createdAt: "desc",
       },

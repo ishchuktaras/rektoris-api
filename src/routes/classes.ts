@@ -6,7 +6,7 @@ const classRouter: Router = express.Router();
 classRouter.post("/classes", createClass);
 classRouter.get("/classes", getClasses);
 classRouter.get("/classes/school/:schoolId", getClassesBySchoolId);
-classRouter.get("/classes/brief", getBriefClasses);
+classRouter.get("/classes/brief/:schoolId", getBriefClasses);
 classRouter.post("/streams", createStream);
 classRouter.get("/streams", getStreams);
 // classRouter.get("/customers/:id", getCustomerById);
