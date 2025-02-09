@@ -30,27 +30,6 @@ export async function createParent(
     schoolName,
   } = data;
 
-  // const formattedData = {
-  //   nationalId,
-  //   phone,
-  //   email,
-  //   whatsappNumber,
-  //   title,
-  //   firstName,
-  //   lastName,
-  //   relationship,
-  //   address,
-  //   gender,
-  //   dateOfBirth: new Date(data.dateOfBirth),
-  //   nationality,
-  //   contactMethod,
-  //   occupation,
-  //   password,
-  //   user: { connect: { id: user } },
-  //   schoolName: data.schoolName,
-  //   schoolId: data.schoolId,
-  // };
-
   try {
     // Check for existing entries
     const [existingEmail, existingNationalId, existingPhoneNumber] =
