@@ -36,6 +36,19 @@ app.use("/api/v1", teachersRouter);
 app.use("/api/v1", userRouter);
 app.use("/api/v1", analyticsRouter);
 
+// Start server
+app.listen(PORT, () => {
+  console.log(`Server is running on http://localhost:${PORT}`);
+});
+
+// Error handling
+app.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
+  console.error(err.stack);
+  res.status(500).json({
+    data: null,
+    error: "Něco se pokazilo!"
+  });
+});
 
 export default app;
 
