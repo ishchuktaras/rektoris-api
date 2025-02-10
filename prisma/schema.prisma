@@ -298,11 +298,11 @@ model Subject {
   type           SubjectType
   passingMarks   Int?
   totalMarks     Int?
-  department     Department?     @relation(fields: [departmentId], references: [id])
+  department     Department     @relation(fields: [departmentId], references: [id])
   departmentId   String
   departmentName String
   school         School          @relation(fields: [schoolId], references: [id])
-  schoolId       String @default("cm6xl45fp0003qx0fpuj6ebex")
+  schoolId       String  @default("cm6xl45fp0003qx0fpuj6ebex")
   isActive       Boolean         @default(true)
   isOptional     Boolean         @default(false)
   hasTheory      Boolean         @default(true)

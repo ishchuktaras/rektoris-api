@@ -88,10 +88,10 @@ export const getTeachers = async (
   }
 };
 
-export const getTeachersBySchoolId = async (
+export async function getTeachersBySchoolId (
   req: Request,
   res: Response
-): Promise<void> => {
+){
   try {
     const { schoolId } = req.params;
     const teachers = await db.teacher.findMany({

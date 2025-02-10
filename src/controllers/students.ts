@@ -106,10 +106,10 @@ export const createStudent = async (
   }
 };
 
-export const getStudents = async (
+export async function getStudents (
   req: Request,
   res: Response
-): Promise<void> => {
+) {
   try {
     const students = await db.student.findMany({
       orderBy: {
@@ -131,10 +131,10 @@ export const getStudents = async (
   }
 };
 
-export const getStudentsBySchoolId = async (
+export async function getStudentsBySchoolId (
   req: Request,
   res: Response
-): Promise<void> => {
+) {
   try {
     const { schoolId } = req.params;
     const students = await db.student.findMany({
@@ -160,10 +160,10 @@ export const getStudentsBySchoolId = async (
   }
 };
 
-export const getNextStudentSequence = async (
+export async function getNextStudentSequence (
   req: Request,
   res: Response
-): Promise<void> => {
+){
   try {
     const { schoolId } = req.params;
     const sequence = await db.student.findFirst({
@@ -176,6 +176,9 @@ export const getNextStudentSequence = async (
     });
     // "ZS/PS/2025/001"
     const lastStudent = await db.student.findFirst({
+      where:{
+        schoolId
+      },
       orderBy: {
         createdAt: "desc",
       },

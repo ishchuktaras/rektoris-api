@@ -9,6 +9,7 @@ import departmentRouter from "./routes/departments";
 import subjectRouter from "./routes/subjects";
 import teachersRouter from "./routes/teachers";
 import userRouter from "./routes/user";
+import analyticsRouter from "./routes/analytics";
 
 // Configure environment variables
 require("dotenv").config();
@@ -33,20 +34,8 @@ app.use("/api/v1", departmentRouter);
 app.use("/api/v1", subjectRouter);
 app.use("/api/v1", teachersRouter);
 app.use("/api/v1", userRouter);
+app.use("/api/v1", analyticsRouter);
 
-// Start server
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
-});
-
-// Error handling
-app.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
-  console.error(err.stack);
-  res.status(500).json({
-    data: null,
-    error: "Něco se pokazilo!"
-  });
-});
 
 export default app;
 

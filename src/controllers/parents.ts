@@ -108,8 +108,8 @@ export const getParentsBySchoolId = async (
   req: Request,
   res: Response
 ): Promise<void> => {
-  const { schoolId } = req.params;
   try {
+    const { schoolId } = req.params;
     const parents = await db.parent.findMany({
       where: {
         schoolId,

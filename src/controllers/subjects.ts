@@ -61,7 +61,7 @@ export async function getSubjects(req: Request, res: Response): Promise<void> {
 export async function getSubjectsBySchoolId(
   req: Request,
   res: Response
-): Promise<void> {
+){
   try {
     const { schoolId } = req.params;
     const subjects = await db.subject.findMany({
@@ -82,15 +82,15 @@ export async function getSubjectsBySchoolId(
 export async function getBriefSubjects(
   req: Request,
   res: Response
-): Promise<void> {
+) {
   try {
     const { schoolId } = req.params;
     const subjects = await db.subject.findMany({
+            orderBy: {
+        createdAt: "desc",
+      },
       where:{
         schoolId
-      },
-      orderBy: {
-        createdAt: "desc",
       },
       select: {
         id: true,

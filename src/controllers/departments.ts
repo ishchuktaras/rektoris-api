@@ -49,6 +49,7 @@ export async function getDepartments(
   res: Response
 ): Promise<void> {
   try {
+    
     const departments = await db.department.findMany({
       orderBy: {
         createdAt: "desc",
@@ -84,10 +85,9 @@ export async function getDepartmentsBySchoolId(
         subjects: true,
       },
     });
-
     res.status(200).json(departments);
   } catch (error) {
-    console.error("Error fetching classes:", error);
+    console.error("Chyba při načítání oddělení:", error);
     res.status(500).json({ message: "Nepodařilo se načíst oddělení." });
   }
 }
@@ -95,7 +95,7 @@ export async function getDepartmentsBySchoolId(
 export async function getBriefDepartments(
   req: Request,
   res: Response
-): Promise<void> {
+){
   try {
     const { schoolId } = req.params;
     const departments = await db.department.findMany({
@@ -110,10 +110,9 @@ export async function getBriefDepartments(
         name: true,
       },
     });
-
     res.status(200).json(departments);
   } catch (error) {
-    console.error("Error fetching classes:", error);
-    res.status(500).json({ message: "Nepodařilo se načíst oddělení." });
+    console.error("Chyba při načítání drief oddělení:", error);
+    res.status(500).json({ message: "Nepodařilo se načíst brief oddělení." });
   }
 }
