@@ -30,6 +30,11 @@ export const getAnalyticsBySchoolId = async (
         schoolId,
       },
     });
+    const departments = await db.department.count({
+          where: {
+            schoolId,
+          },
+        });
     const result = [
       {
         title: "Students",
@@ -46,6 +51,10 @@ export const getAnalyticsBySchoolId = async (
       {
         title: "Classes",
         count: classes,
+      },
+      {
+        title: "Departments",
+        count: departments,
       },
     ];
 
