@@ -5,10 +5,10 @@ import { UserRole } from "@prisma/client";
 import { Request, Response } from "express";
 import { createUserService } from "./users";
 
-export const createTeacher = async (
+export async function createTeacher(
   req: TypedRequestBody<TeacherCreateProps>,
   res: Response
-): Promise<void> => {
+) {
   const data = req.body;
   console.log(data);
   const { nationalId, phone, email, dateOfBirth, dateOfJoining } = data;
@@ -52,7 +52,7 @@ export const createTeacher = async (
     };
     const user = await createUserService(userData);
     data.userId = user.id;
-
+    console.log(user, data);
     // Create a new teacher
     const newTeacher = await db.teacher.create({
       data,
@@ -60,12 +60,12 @@ export const createTeacher = async (
     console.log(
       `Učitel úspěšně vytvořil: ${newTeacher.firstName} (${newTeacher.id})`
     );
-    res.status(201).json({ data: newTeacher });
-  } catch (error: any) {
-    console.error("Chyba databáze:", error); // Add more logging here
-    res.status(500).json({ error: "Chyba databáze: " + error.message });
+    res.status(201).json({ data: newTeacher, error: null });
+  } catch (error) {
+    console.error("Chyba databáze:", error);
+    res.status(500).json({ error: "Chyba databáze: " + (error as Error).message });
   }
-};
+}
 
 export const getTeachers = async (
   req: Request,
@@ -88,15 +88,12 @@ export const getTeachers = async (
   }
 };
 
-export async function getTeachersBySchoolId (
-  req: Request,
-  res: Response
-){
+export async function getTeachersBySchoolId(req: Request, res: Response) {
   try {
     const { schoolId } = req.params;
     const teachers = await db.teacher.findMany({
-      where:{
-        schoolId
+      where: {
+        schoolId,
       },
       orderBy: {
         createdAt: "desc",
@@ -111,4 +108,4 @@ export async function getTeachersBySchoolId (
       error: "Něco se pokazilo",
     });
   }
-};
+}
