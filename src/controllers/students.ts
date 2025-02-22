@@ -98,7 +98,7 @@ export const createStudent = async (
       error: null,
     });
   } catch (error) {
-    console.error("Error creating student:", error);
+    console.error("Chyba při vytváření studenta:", error);
     res.status(500).json({
       data: null,
       error: "Vytvoření studenta se nezdařilo. ",

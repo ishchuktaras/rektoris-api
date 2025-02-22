@@ -74,11 +74,11 @@ model Stream {
   slug      String    @unique
   classId   String // Foreign key for Class
   class     Class     @relation(fields: [classId], references: [id], onDelete: Cascade)
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
   students  Student[]
   schoolId  String
   school    School    @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 
   @@map("streams")
 }
@@ -145,7 +145,7 @@ model Parent {
   password       String
   imageUrl       String?
   students       Student[]
-  schoolId       String?
+  schoolId       String
   schoolName     String
   school         School?   @relation(fields: [schoolId], references: [id], onDelete: Cascade)
   createdAt      DateTime  @default(now())
@@ -189,7 +189,7 @@ model Student {
   createdAt              DateTime @default(now())
   updatedAt              DateTime @updatedAt
 
-  // Relationships (assuming these exist)
+  // Vztahy (za předpokladu, že existují)
   parent Parent @relation(fields: [parentId], references: [id], onDelete: Cascade)
   class  Class  @relation(fields: [classId], references: [id], onDelete: Cascade)
   stream Stream @relation(fields: [streamId], references: [id], onDelete: Cascade)
@@ -261,8 +261,6 @@ model Department {
   id           String    @id @default(cuid())
   name         String
   slug         String    @unique
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
   school       School    @relation(fields: [schoolId], references: [id], onDelete: Cascade)
   schoolId     String
   hodId        String?
@@ -272,6 +270,8 @@ model Department {
   subjects     Subject[]
   budjet       Float?
   budjetYear   String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
 
   @@map("departments")
 }

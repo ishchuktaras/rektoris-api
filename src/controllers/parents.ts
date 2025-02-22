@@ -9,26 +9,7 @@ export async function createParent(
   res: Response
 ) {
   const data = req.body;
-  const {
-    nationalId,
-    phone,
-    email,
-    whatsappNumber,
-    title,
-    firstName,
-    lastName,
-    relationship,
-    address,
-    gender,
-    dateOfBirth,
-    nationality,
-    contactMethod,
-    occupation,
-    password,
-    user,
-    schoolId,
-    schoolName,
-  } = data;
+  const { nationalId, phone, email } = data;
 
   try {
     // Check for existing entries
@@ -78,8 +59,8 @@ export async function createParent(
     );
     res.status(201).json({ data: newParent });
   } catch (error: any) {
-    console.error("Database error:", error); // Add more logging here
-    res.status(500).json({ error: "Database error: " + error.message });
+    console.error("Chyba databáze:", error); // Add more logging here
+    res.status(500).json({ error: "Chyba databáze:" + error.message });
   }
 }
 

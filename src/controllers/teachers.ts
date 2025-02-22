@@ -52,13 +52,13 @@ export async function createTeacher(
     };
     const user = await createUserService(userData);
     data.userId = user.id;
-    console.log(user, data);
+   
     // Create a new teacher
     const newTeacher = await db.teacher.create({
       data,
     });
     console.log(
-      `Učitel úspěšně vytvořil: ${newTeacher.firstName} (${newTeacher.id})`
+      `Učitel úspěšně vytvořen: ${newTeacher.firstName} (${newTeacher.id})`
     );
     res.status(201).json({ data: newTeacher, error: null });
   } catch (error) {
