@@ -29,7 +29,7 @@ export const createSubject = async (
       data,
     });
     console.log(
-      `Předmět úspěšně vytvořeno: ${newSubject.name} (${newSubject.id})`
+      `Předmět úspěšně vytvořen: ${newSubject.name} (${newSubject.id})`
     );
     res.status(201).json({
       data: newSubject,
@@ -58,10 +58,7 @@ export async function getSubjects(req: Request, res: Response): Promise<void> {
   }
 }
 
-export async function getSubjectsBySchoolId(
-  req: Request,
-  res: Response
-){
+export async function getSubjectsBySchoolId(req: Request, res: Response) {
   try {
     const { schoolId } = req.params;
     const subjects = await db.subject.findMany({
@@ -79,18 +76,15 @@ export async function getSubjectsBySchoolId(
   }
 }
 
-export async function getBriefSubjects(
-  req: Request,
-  res: Response
-) {
+export async function getBriefSubjects(req: Request, res: Response) {
   try {
     const { schoolId } = req.params;
     const subjects = await db.subject.findMany({
-            orderBy: {
+      orderBy: {
         createdAt: "desc",
       },
-      where:{
-        schoolId
+      where: {
+        schoolId,
       },
       select: {
         id: true,

@@ -37,23 +37,23 @@ export const getAnalyticsBySchoolId = async (
         });
     const result = [
       {
-        title: "Students",
+        title: "Studenti",
         count: students,
       },
       {
-        title: "Teachers",
+        title: "Učitelé",
         count: teachers,
       },
       {
-        title: "Parents",
+        title: "Rodiče",
         count: parents,
       },
       {
-        title: "Classes",
+        title: "Třídy",
         count: classes,
       },
       {
-        title: "Departments",
+        title: "Oddělení",
         count: departments,
       },
     ];

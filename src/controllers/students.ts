@@ -16,7 +16,7 @@ export const createStudent = async (
     rollNumber,
     dateOfBirth,
     admissionDate,
-    schoolId
+    schoolId,
   } = data;
 
   try {
@@ -36,37 +36,25 @@ export const createStudent = async (
 
     // Check for existing entries
     const existingEntries = await Promise.all([
-      db.student.findFirst({ 
-        where: { 
-          AND: [
-            { email },
-            { schoolId }
-          ]
-        } 
+      db.student.findFirst({
+        where: {
+          AND: [{ email }, { schoolId }],
+        },
       }),
-      db.student.findFirst({ 
-        where: { 
-          AND: [
-            { birthCertificateNumber },
-            { schoolId }
-          ]
-        } 
+      db.student.findFirst({
+        where: {
+          AND: [{ birthCertificateNumber }, { schoolId }],
+        },
       }),
-      db.student.findFirst({ 
-        where: { 
-          AND: [
-            { regNo },
-            { schoolId }
-          ]
-        } 
+      db.student.findFirst({
+        where: {
+          AND: [{ regNo }, { schoolId }],
+        },
       }),
-      db.student.findFirst({ 
-        where: { 
-          AND: [
-            { rollNumber },
-            { schoolId }
-          ]
-        } 
+      db.student.findFirst({
+        where: {
+          AND: [{ rollNumber }, { schoolId }],
+        },
       }),
     ]);
 
@@ -79,26 +67,26 @@ export const createStudent = async (
 
     // Create specific error messages for each duplicate case
     if (existingEmail) {
-      res.status(409).json({ 
-        error: `Student s emailem ${email} již existuje v této škole` 
+      res.status(409).json({
+        error: `Student s emailem ${email} již existuje v této škole`,
       });
       return;
     }
     if (existingBirthCertificateNumber) {
-      res.status(409).json({ 
-        error: `Student s rodným číslem ${birthCertificateNumber} již existuje v této škole` 
+      res.status(409).json({
+        error: `Student s rodným číslem ${birthCertificateNumber} již existuje v této škole`,
       });
       return;
     }
     if (existingRegNo) {
-      res.status(409).json({ 
-        error: `Student s registračním číslem ${regNo} již existuje v této škole` 
+      res.status(409).json({
+        error: `Student s registračním číslem ${regNo} již existuje v této škole`,
       });
       return;
     }
     if (existingRollNumber) {
-      res.status(409).json({ 
-        error: `Student se školním číslem ${rollNumber} již existuje v této škole` 
+      res.status(409).json({
+        error: `Student se školním číslem ${rollNumber} již existuje v této škole`,
       });
       return;
     }
@@ -138,10 +126,7 @@ export const createStudent = async (
   }
 };
 
-export async function getStudents (
-  req: Request,
-  res: Response
-) {
+export async function getStudents(req: Request, res: Response) {
   try {
     const students = await db.student.findMany({
       orderBy: {
@@ -161,14 +146,15 @@ export async function getStudents (
       error: "Nepodařilo se získat další sekvenci studentů.",
     });
   }
-};
+}
 
-export async function getStudentsBySchoolId (
-  req: Request,
-  res: Response
-) {
+export async function getStudentsBySchoolId(req: Request, res: Response) {
+  const { schoolId } = req.params;
+  if (!schoolId) {
+    res.status(400).json({ error: "Chybí ID školy" });
+    return;
+  }
   try {
-    const { schoolId } = req.params;
     const students = await db.student.findMany({
       where: {
         schoolId,
@@ -190,17 +176,18 @@ export async function getStudentsBySchoolId (
       error: "Nepodařilo se získat další sekvenci studentů.",
     });
   }
-};
+}
 
-export async function getNextStudentSequence (
-  req: Request,
-  res: Response
-){
+export async function getNextStudentSequence(req: Request, res: Response) {
+  const { schoolId } = req.params;
+  if (!schoolId) {
+    res.status(400).json({ error: "Chybí ID školy" });
+    return;
+  }
   try {
-    const { schoolId } = req.params;
     const sequence = await db.student.findFirst({
-      where:{
-        schoolId
+      where: {
+        schoolId,
       },
       orderBy: {
         createdAt: "desc",
@@ -208,8 +195,8 @@ export async function getNextStudentSequence (
     });
     // "ZS/PS/2025/001"
     const lastStudent = await db.student.findFirst({
-      where:{
-        schoolId
+      where: {
+        schoolId,
       },
       orderBy: {
         createdAt: "desc",
@@ -226,4 +213,4 @@ export async function getNextStudentSequence (
       error: "Nepodařilo se získat další sekvenci studentů.",
     });
   }
-};
+}

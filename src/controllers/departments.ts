@@ -112,7 +112,7 @@ export async function getBriefDepartments(
     });
     res.status(200).json(departments);
   } catch (error) {
-    console.error("Chyba při načítání drief oddělení:", error);
+    console.error("Chyba při načítání brief oddělení:", error);
     res.status(500).json({ message: "Nepodařilo se načíst brief oddělení." });
   }
 }
