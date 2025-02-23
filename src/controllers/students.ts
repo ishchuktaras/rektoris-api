@@ -16,6 +16,7 @@ export const createStudent = async (
     rollNumber,
     dateOfBirth,
     admissionDate,
+    schoolId
   } = data;
 
   try {
@@ -35,10 +36,38 @@ export const createStudent = async (
 
     // Check for existing entries
     const existingEntries = await Promise.all([
-      db.student.findUnique({ where: { email } }),
-      db.student.findUnique({ where: { birthCertificateNumber } }),
-      db.student.findUnique({ where: { regNo } }),
-      db.student.findUnique({ where: { rollNumber } }),
+      db.student.findFirst({ 
+        where: { 
+          AND: [
+            { email },
+            { schoolId }
+          ]
+        } 
+      }),
+      db.student.findFirst({ 
+        where: { 
+          AND: [
+            { birthCertificateNumber },
+            { schoolId }
+          ]
+        } 
+      }),
+      db.student.findFirst({ 
+        where: { 
+          AND: [
+            { regNo },
+            { schoolId }
+          ]
+        } 
+      }),
+      db.student.findFirst({ 
+        where: { 
+          AND: [
+            { rollNumber },
+            { schoolId }
+          ]
+        } 
+      }),
     ]);
 
     const [
@@ -48,26 +77,29 @@ export const createStudent = async (
       existingRollNumber,
     ] = existingEntries;
 
+    // Create specific error messages for each duplicate case
     if (existingEmail) {
-      res.status(409).json({ error: "Student s tímto e-mailem již existuje" });
+      res.status(409).json({ 
+        error: `Student s emailem ${email} již existuje v této škole` 
+      });
       return;
     }
     if (existingBirthCertificateNumber) {
-      res
-        .status(409)
-        .json({ error: "Student s tímto rodným číslem již existuje" });
+      res.status(409).json({ 
+        error: `Student s rodným číslem ${birthCertificateNumber} již existuje v této škole` 
+      });
       return;
     }
     if (existingRegNo) {
-      res
-        .status(409)
-        .json({ error: "Student s tímto registračním číslem již existuje" });
+      res.status(409).json({ 
+        error: `Student s registračním číslem ${regNo} již existuje v této škole` 
+      });
       return;
     }
     if (existingRollNumber) {
-      res
-        .status(409)
-        .json({ error: "Student s tímto školním číslem již existuje" });
+      res.status(409).json({ 
+        error: `Student se školním číslem ${rollNumber} již existuje v této škole` 
+      });
       return;
     }
 

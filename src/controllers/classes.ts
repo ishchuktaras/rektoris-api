@@ -17,15 +17,16 @@ export const createClass = async (
   data.slug = slug;
   try {
     // Check if the school already exists\
-    const existingClass = await db.class.findUnique({
+    const existingClass = await db.class.findFirst({
       where: {
-        slug,
+        AND: [{ slug }, { schoolId: data.schoolId }],
       },
     });
+
     if (existingClass) {
       res.status(409).json({
         data: null,
-        error: "Třída již existuje",
+        error: `Třída '${data.title}' již v této škole existuje`,
       });
       return;
     }
@@ -43,7 +44,7 @@ export const createClass = async (
     console.log(error);
     res.status(500).json({
       data: null,
-      error: "Něco se pokazilo",
+      error: "Vytvoření třídy se nezdařilo",
     });
   }
 };
@@ -125,7 +126,7 @@ export async function getBriefClasses(
   try {
     const classes = await db.class.findMany({
       where: {
-        schoolId
+        schoolId,
       },
       orderBy: {
         createdAt: "desc",
@@ -153,15 +154,16 @@ export async function createStream(
   data.slug = slug;
   try {
     // Check if the Stream already exists\
-    const existingStream = await db.stream.findUnique({
+    const existingStream = await db.stream.findFirst({
       where: {
-        slug,
+        AND: [{ slug }, { schoolId: data.schoolId }],
       },
     });
+
     if (existingStream) {
       res.status(409).json({
         data: null,
-        error: "Stream již existuje",
+        error: `Stream '${data.title}' již v této škole existuje`,
       });
       return;
     }
@@ -179,7 +181,7 @@ export async function createStream(
     console.log(error);
     res.status(500).json({
       data: null,
-      error: "Něco se pokazilo",
+      error: "Vytvoření streamu se nezdařilo",
     });
   }
 }
@@ -187,6 +189,26 @@ export async function createStream(
 export async function getStreams(req: Request, res: Response): Promise<void> {
   try {
     const streams = await db.stream.findMany({
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+    res.status(200).json(streams);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function getStreamsBySchoolId(
+  req: Request,
+  res: Response
+): Promise<void> {
+  const { schoolId } = req.params;
+  try {
+    const streams = await db.stream.findMany({
+      where: {
+        schoolId,
+      },
       orderBy: {
         createdAt: "desc",
       },
