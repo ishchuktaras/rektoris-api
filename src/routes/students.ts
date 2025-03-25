@@ -1,6 +1,6 @@
 
 import express, { Router } from "express";
-import { createStudent, getStudents, getNextStudentSequence, getStudentsBySchoolId } from "@/controllers/students";
+import { createStudent, getStudents, getNextStudentSequence, getStudentsBySchoolId, getStudentsByParentId } from "@/controllers/students";
 
 const studentRouter: Router = express.Router();
 
@@ -8,6 +8,7 @@ const studentRouter: Router = express.Router();
 studentRouter.post("/students", createStudent);
 studentRouter.get("/students", getStudents);
 studentRouter.get("/students/school/:schoolId", getStudentsBySchoolId);
+studentRouter.get("/students/parent/:parentId", getStudentsByParentId);
 studentRouter.get("/students/sequence/:schoolId", getNextStudentSequence);
 
 export default studentRouter;

@@ -8,6 +8,7 @@ import bcrypt from "bcrypt";
 import { TokenPayload } from "@/utils/tokens";
 import { generateAccessToken, generateRefreshToken } from "@/utils/tokens";
 import e, { Request, Response } from "express";
+import { User, UserRole } from "@prisma/client";
 
 export async function createUserService(data: UserCreateProps) {
   const existingEmail = await db.user.findUnique({
@@ -33,10 +34,9 @@ export const createUser = async (
   req: TypedRequestBody<UserCreateProps>,
   res: Response
 ): Promise<void> => {
-  const data = req.body;  
+  const data = req.body;
 
-  try { 
-   
+  try {
     const newUser = await createUserService(req.body);
     res.status(201).json({
       data: newUser,
@@ -141,5 +141,70 @@ export async function getAllUsers(req: Request, res: Response): Promise<void> {
   } catch (error) {
     console.error("Při načítání předmětu došlo k chybě:", error);
     res.status(500).json({ message: "Nepodařilo se načíst předmět." });
+  }
+}
+
+export async function getUserProfileId(req: Request, res: Response) {
+  const { userId } = req.params;
+  const { role } = req.query;
+  const userRole = role as UserRole;
+  let profileId = null;
+
+  try {
+    if (userRole === "PARENT") {
+      profileId = await db.student.findUnique({
+        where: {
+          userId,
+        },
+        select: {
+          id: true,
+        },
+      });
+      res.status(200).json(profileId);
+      return;
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      data: null,
+      error: "Něco se pokazilo",
+    });
+  }
+}
+
+export async function getNextStudentSequence(req: Request, res: Response) {
+  const { schoolId } = req.params;
+  if (!schoolId) {
+    res.status(400).json({ error: "Chybí ID školy" });
+    return;
+  }
+  try {
+    const sequence = await db.student.findFirst({
+      where: {
+        schoolId,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+    // "ZS/PS/2025/001"
+    const lastStudent = await db.student.findFirst({
+      where: {
+        schoolId,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+    const stringSequence = lastStudent?.regNo.split("/")[3];
+    const lastSequence = stringSequence ? parseInt(stringSequence) : 0;
+    const nextSequence = lastSequence + 1;
+    res.status(200).json(nextSequence);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      data: null,
+      error: "Nepodařilo se získat další sekvenci studentů.",
+    });
   }
 }

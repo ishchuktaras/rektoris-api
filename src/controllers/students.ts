@@ -178,6 +178,42 @@ export async function getStudentsBySchoolId(req: Request, res: Response) {
   }
 }
 
+export async function getStudentsByParentId(req: Request, res: Response) {
+  const { parentId } = req.params;
+  try {
+    const students = await db.student.findMany({
+      where: {
+        parentId,
+      },
+      select: {
+        id: true,
+        name: true,
+        regNo: true,
+        classTitle: true,
+        streamTitle: true,
+        dateOfBirth: true,
+        parentId: true,
+        imageUrl: true,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+    res.status(200).json(students);
+    return;
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      data: null,
+      error: "Něco se pokazilo",
+    });
+    res.status(500).json({
+      data: null,
+      error: "Nepodařilo se získat další sekvenci studentů.",
+    });
+  }
+}
+
 export async function getNextStudentSequence(req: Request, res: Response) {
   const { schoolId } = req.params;
   if (!schoolId) {
